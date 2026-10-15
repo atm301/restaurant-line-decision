@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>後台｜餐飲精準發訊決策</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--grn:#06c755;--grn-d:#04a344;--teal:#0f8a80;--deep:#0b3d3a;--ink:#14211f;--mute:#64807c;--bg:#f1f8f5;--bg2:#fff;--line:#d5ebe2;--tint:#e6f7ee;--amber:#d98c28;--red:#c94435;--green:#1f8a4c;--blue:#2f6fd0;}
+  body{font-family:'Noto Sans TC',system-ui,'PingFang TC','Microsoft JhengHei',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+  .wrap{max-width:1240px;margin:0 auto;padding:16px;}
+  header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  h1{font-size:1.2rem;font-weight:900;color:var(--grn-d);}
+  .seg{display:flex;gap:6px;flex-wrap:wrap;}
+  .seg button,.qbtn{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:6px 14px;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;color:var(--mute);}
+  .seg button.on{background:var(--grn);border-color:var(--grn);color:#fff;}
+  .qbtn{background:var(--grn);border-color:var(--grn);color:#fff;}
+  .qbtn.alt{background:var(--teal);border-color:var(--teal);}
+  .s,select.s,input.s{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-family:inherit;font-size:.86rem;background:var(--bg2);color:var(--ink);}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .chip{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:4px 13px;font-size:.82rem;font-weight:700;color:var(--mute);}
+  .chip b{color:var(--grn-d);}
+  .cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));}
+  .dcard{background:var(--bg2);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(11,61,58,.07);}
+  .dcard.latest{border-color:var(--grn);box-shadow:0 0 0 2px rgba(6,199,85,.18);}
+  .dcard .hd{background:var(--grn);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .dcard .hd b{font-size:1.02rem;}
+  .dcard .hd .sce{background:rgba(0,0,0,.18);border-radius:999px;padding:2px 10px;font-size:.76rem;font-weight:800;}
+  .dcard .hd .tm{margin-left:auto;font-size:.74rem;opacity:.9;}
+  .dcard .bd{padding:12px 14px;}
+  .dcard .f{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);}
+  .dcard .f:last-child{border-bottom:0;}
+  .dcard .f .k{flex:0 0 96px;font-size:.78rem;font-weight:800;color:var(--teal);}
+  .dcard .f .v{flex:1;font-size:.88rem;white-space:pre-wrap;}
+  .dcard .f .v.empty{color:#c4d6d0;}
+  .dcard .ft{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:var(--tint);border-top:1px solid var(--line);font-size:.82rem;}
+  .dcard .ft b{color:var(--grn-d);}
+  .dcard .ft .over{color:var(--red);font-weight:900;}
+  .dcard .tag{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.72rem;margin:2px 3px 0 0;}
+  .dcard .acts{margin-left:auto;display:flex;gap:6px;}
+  .mini{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 11px;font-size:.76rem;font-weight:800;cursor:pointer;font-family:inherit;color:var(--teal);text-decoration:none;}
+  .panel{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;}
+  .panel h2{font-size:1.02rem;color:var(--grn-d);margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .panel h2 a{font-size:.8rem;font-weight:800;}
+  .lrow{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;padding:9px 11px;border-radius:12px;background:var(--bg);margin-bottom:7px;}
+  .lrow.t1{background:linear-gradient(100deg,#fff8e8,#ffefd0);}
+  .lrow .rk{font-size:1.2rem;font-weight:900;text-align:center;color:var(--grn-d);}
+  .lrow .tm{font-weight:900;}
+  .lrow .tm .c{display:block;font-size:.74rem;color:var(--mute);font-weight:700;}
+  .lrow .pt{font-size:1.4rem;font-weight:900;color:var(--grn-d);}
+  .ctl{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+  .ctl .rz{flex:1;min-width:190px;}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
+  .quick button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:800;font-family:inherit;cursor:pointer;color:var(--grn-d);}
+  .quick button.on{background:var(--grn);border-color:var(--grn);color:#fff;}
+  .log{max-height:300px;overflow:auto;}
+  .logi{display:flex;gap:9px;align-items:center;padding:7px 9px;border-bottom:1px solid var(--line);font-size:.84rem;flex-wrap:wrap;}
+  .logi .p{font-weight:900;color:var(--green);min-width:34px;} .logi .p.neg{color:var(--red);}
+  .logi .rs{color:var(--mute);} .logi .dt{margin-left:auto;color:var(--mute);font-size:.74rem;}
+  .logi .x{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:2px 9px;font-size:.72rem;cursor:pointer;font-family:inherit;color:var(--mute);}
+  .pq{font-weight:900;margin-bottom:8px;}
+  .pbar{display:flex;align-items:center;gap:9px;margin-bottom:6px;font-size:.86rem;}
+  .pbar .l{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.76rem;flex:0 0 auto;}
+  .pbar .l.ans{background:var(--green);}
+  .pbar .t{flex:1;background:var(--bg);border-radius:999px;height:26px;position:relative;overflow:hidden;}
+  .pbar .t i{position:absolute;left:0;top:0;bottom:0;background:#cdf0dd;}
+  .pbar .t span{position:absolute;left:10px;top:0;line-height:26px;font-size:.8rem;}
+  .pbar .v{font-weight:800;color:var(--grn-d);min-width:78px;text-align:right;font-size:.8rem;}
+  table.st{width:100%;border-collapse:collapse;font-size:.84rem;background:var(--bg2);}
+  table.st th{background:var(--grn);color:#fff;text-align:left;padding:8px 10px;position:sticky;top:0;}
+  table.st td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top;}
+  .tag{display:inline-block;background:var(--tint);color:var(--grn-d);border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:800;margin:1px 2px 1px 0;}
+  .empty{text-align:center;color:var(--mute);padding:40px 16px;}
+  .sub{display:flex;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:9px;}
+  .sub img{max-width:220px;border-radius:9px;cursor:zoom-in;}
+  .sub .txt{white-space:pre-wrap;font-size:.86rem;}
+  #lb{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:90;padding:20px;}
+  #lb.show{display:flex;} #lb img{max-width:100%;max-height:92vh;border-radius:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📊 餐飲精準發訊決策 · 後台</h1>
+    <div class="seg" id="view">
+      <button data-v="card" class="on" type="button">📝 決策卡</button>
+      <button data-v="score" type="button">🏆 計分</button>
+      <button data-v="poll" type="button">📊 互動題</button>
+      <button data-v="vote" type="button">🗳️ 投票</button>
+      <button data-v="stud" type="button">🙋 學員</button>
+      <button data-v="misc" type="button">📎 其他交件</button>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+      <select class="s" id="cohortSel"></select>
+      <input class="s" id="q" placeholder="搜尋組別／名字／店名" style="width:160px">
+      <a class="qbtn alt" id="boardLink" href="board.html" target="_blank" rel="noopener">📺 投影</a>
+      <button class="qbtn" id="reload" type="button">↻ 重新整理</button>
+      <button class="qbtn" id="csv" type="button">⬇ CSV</button>
+    </div>
+  </header>
+  <div class="chips" id="chips"></div>
+  <div id="host"><div class="empty">載入中…</div></div>
+</div>
+<div id="lb"><img id="lbimg" src="" alt="放大檢視"></div>
+<script>
+  var SUPA='https://dpglkagtzdwiovzbtase.supabase.co',KEY='sb_publishable_Tuj9p4DXvO-jEqVcBnumTg_TqZ1NnRu';
+  function H(){return {apikey:KEY,Authorization:'Bearer '+KEY};}
+  var COURSE='restaurant-line-decision';
+  var GROUPS=['第1組','第2組','第3組','第4組','第5組','第6組'];
+  var DCF=[['goal','生意目標'],['g1','第一群'],['g2','第二群'],['g3','第三群'],['ex','排除名單'],['msg','訊息重點'],['cta','CTA'],['kpi','保守目標與 KPI']];
+  var POLLS={
+    fake:{q:'破冰：哪一件是假的',o:[['1','Podcast 100 集'],['2','月交易 1 億美金'],['3','史瓦帝尼演講']]},
+    q1:{q:'暖身：全發一次要花多少',o:[['A','約 1,400 元'],['B','約 3,400 元'],['C','約 2,200 元'],['D','免費']],ans:'C'},
+    q2:{q:'Part1：新品先發給誰',o:[['A','隨機 3,000 人'],['B','消費最高 VIP'],['C','點過燉飯或野菇'],['D','本月新好友']],ans:'C'},
+    q3:{q:'漲價前怎麼對熟客',o:[['A','默默換菜單'],['B','全體群發公告'],['C','提前告知＋加值'],['D','送 8 折券']],ans:'C'},
+    q4:{q:'發對話：訊息該補什麼',o:[['A','折扣越大越好'],['B','為什麼是你＋時段'],['C','完整菜單'],['D','地址電話']],ans:'B'},
+    q5:{q:'Part3：效率差幾倍',o:[['A','1.5 倍'],['B','2 倍'],['C','3.3 倍'],['D','5 倍']],ans:'C'},
+    q6:{q:'Part4：限量先發哪一群',o:[['A','新進客'],['B','VIP 與高頻鐵粉'],['C','沉睡客'],['D','已流失']],ans:'B'}
+  };
+  var subs=[],studs=[],scores=[],cohort='',view='card',pickPts=1,pickReason='個人題答對',pickIdx=0,pickTeam='',lastSig='';
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+  function fmt(s){try{return new Date(s).toLocaleString('zh-TW',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+  function n0(n){return Math.round(+n||0).toLocaleString('en-US');}
+  function todayStr(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  async function jget(p){try{var r=await fetch(SUPA+'/rest/v1/'+p,{headers:H()});var j=await r.json();return Array.isArray(j)?j:[];}catch(e){return [];}}
+  async function load(force){
+    var c='course=eq.'+encodeURIComponent(COURSE);
+    var r=await Promise.all([
+      jget('lw_workshop_submissions?'+c+'&select=*&order=created_at.asc'),
+      jget('lw_line_students?'+c+'&select=*&order=updated_at.desc'),
+      jget('lw_workshop_scores?'+c+'&select=*&order=created_at.desc')
+    ]);
+    subs=r[0];studs=r[1];scores=r[2];
+    var sig=JSON.stringify([subs.map(function(x){return x.id;}),scores.map(function(x){return x.id;}),studs.map(function(x){return x.code+x.updated_at;})]);
+    var same=(sig===lastSig); lastSig=sig;
+    if(same&&!force)return;
+    var cs={};subs.concat(studs).concat(scores).forEach(function(x){if(x.cohort)cs[x.cohort]=1;});
+    cs[todayStr()]=1; cs['2026-10-22']=1;
+    var keys=Object.keys(cs).sort().reverse();
+    if(cohort===''&&keys.indexOf('2026-10-22')>=0)cohort='2026-10-22';
+    var sel=document.getElementById('cohortSel');
+    sel.innerHTML='<option value="">全部梯次</option>'+keys.map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+'</option>';}).join('');
+    if(cohort&&keys.indexOf(cohort)<0)cohort='';
+    sel.value=cohort;
+    document.getElementById('boardLink').href='board.html'+(cohort?'?c='+encodeURIComponent(cohort):'');
+    render();
+  }
+  function q(){return (document.getElementById('q').value||'').trim().toLowerCase();}
+  function inC(r){return !cohort||r.cohort===cohort;}
+  function fSubs(t){var s=q();return subs.filter(function(r){if(!inC(r))return false;if(t&&r.task!==t)return false;if(s)return ((r.team||'')+(r.submitter||'')).toLowerCase().indexOf(s)>=0;return true;});}
+  function fStuds(){var s=q();return studs.filter(function(r){if(!inC(r))return false;if(s)return ((r.code||'')+(r.name||'')+((r.quiz||{}).shop||'')).toLowerCase().indexOf(s)>=0;return true;});}
+  function parseCard(r){ try{var c=JSON.parse(r.content); if(c&&c._card)return c;}catch(e){} return null; }
+  function cardsByTeam(){
+    var by={};
+    fSubs('card').forEach(function(r){ var c=parseCard(r); if(!c)return; c._id=r.id; c._at=r.created_at; c._team=r.team; (by[r.team]=by[r.team]||[]).push(c); });
+    return by;
+  }
+  function totals(){
+    var up={},bo={};
+    subs.filter(inC).forEach(function(x){up[x.team]=(up[x.team]||0)+1;});
+    scores.filter(inC).forEach(function(x){bo[x.team]=(bo[x.team]||0)+(+x.points||0);});
+    var names=GROUPS.slice();
+    Object.keys(up).concat(Object.keys(bo)).forEach(function(k){if(k&&names.indexOf(k)<0)names.push(k);});
+    return names.map(function(g){return {g:g,u:up[g]||0,b:bo[g]||0,p:(up[g]||0)+(bo[g]||0)};})
+      .sort(function(a,b){return b.p-a.p||b.u-a.u||(a.g<b.g?-1:1);});
+  }
+  function voteTally(){
+    var t={},n=0;
+    studs.filter(inC).forEach(function(r){var v=(r.quiz||{}).vote;if(v){t[v]=(t[v]||0)+1;n++;}});
+    return {t:t,n:n};
+  }
+  function cardHtml(c,latest){
+    var over=c.limit&&c.reach>c.limit;
+    return '<div class="dcard'+(latest?' latest':'')+'"><div class="hd"><b>'+esc(c.grp||c._team||'')+'</b>'
+      +'<span class="sce">'+esc(c.sceName||'未選情境')+'</span>'
+      +(c.shop?'<span style="font-size:.8rem;opacity:.92">'+esc(c.shop)+'</span>':'')
+      +'<span class="tm">'+(latest?'最新 · ':'')+fmt(c._at)+'</span></div>'
+      +'<div class="bd">'+DCF.map(function(f){
+        var v=(c[f[0]]||'').toString().trim();
+        return '<div class="f"><div class="k">'+f[1]+'</div><div class="v'+(v?'':' empty')+'">'+esc(v||'（空白）')+'</div></div>';
+      }).join('')+'</div>'
+      +'<div class="ft">發送 <b>'+n0(c.reach)+' 人</b>　成本 <b>約 '+n0(c.cost)+' 元</b>'
+      +(c.limit?('　上限 '+n0(c.limit)+(over?' <span class="over">⚠️ 超出 '+n0(c.reach-c.limit)+'</span>':' ✅')):'')
+      +(c.tags&&c.tags.length?'<div style="flex-basis:100%">'+c.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('')+'</div>':'')
+      +'<div class="acts"><a class="mini" href="board.html?demo='+encodeURIComponent(c._team)+(cohort?'&c='+encodeURIComponent(cohort):'')+'" target="_blank" rel="noopener">▶ 投影這張</a>'
+      +'<button class="mini" data-copy="'+esc(encodeURIComponent(cardText(c)))+'">📋 複製</button></div></div></div>';
+  }
+  function cardText(c){
+    var L=['【發訊決策卡】'+(c.sceName||'')+'　'+(c.grp||'')+(c.shop?'　'+c.shop:''),''];
+    DCF.forEach(function(f){L.push(f[1]+'：'+((c[f[0]]||'').toString()||'（空）'));});
+    L.push('發送人數：'+n0(c.reach)+' 人　訊息成本：約 '+n0(c.cost)+' 元');
+    if(c.tags&&c.tags.length)L.push('標籤：'+c.tags.join('、'));
+    return L.join('\n');
+  }
+  function render(){
+    var host=document.getElementById('host'),chips=document.getElementById('chips'),now=new Date().toLocaleTimeString('zh-TW',{hour12:false});
+    if(view==='card'){
+      var by=cardsByTeam(), teams=GROUPS.filter(function(g){return by[g];}).concat(Object.keys(by).filter(function(k){return GROUPS.indexOf(k)<0;}));
+      var tot=0; Object.keys(by).forEach(function(k){tot+=by[k].length;});
+      chips.innerHTML='<span class="chip">已交決策卡的組 <b>'+teams.length+' / '+GROUPS.length+'</b></span><span class="chip">總版次 <b>'+tot+'</b></span><span class="chip">更新 '+now+'</span>';
+      if(!teams.length){host.innerHTML='<div class="empty">還沒有任何一組送出決策卡。<br><span style="font-size:.85rem">學員在「📝 決策卡」分頁填好按送出就會出現在這裡。</span></div>';return;}
+      host.innerHTML='<div class="cards">'+teams.map(function(t){
+        var arr=by[t], last=arr[arr.length-1];
+        var olds=arr.slice(0,-1).reverse();
+        return cardHtml(last,true)+olds.map(function(c){return cardHtml(c,false);}).join('');
+      }).join('')+'</div>';
+    }
+    else if(view==='score'){
+      var arr=totals(),medal=['🥇','🥈','🥉'];
+      chips.innerHTML='<span class="chip">計分梯次 <b>'+esc(cohort||'請選')+'</b></span><span class="chip">加減分紀錄 <b>'+scores.filter(inC).length+'</b></span><span class="chip">更新 '+now+'</span>';
+      var lead=arr.map(function(x,i){return '<div class="lrow'+(i===0&&x.p>0?' t1':'')+'"><div class="rk">'+(i<3&&x.p>0?medal[i]:(i+1))+'</div><div class="tm">'+esc(x.g)+'<span class="c">交件 '+x.u+(x.b?' · 講師加分 '+(x.b>0?'+':'')+x.b:'')+'</span></div><div class="pt">'+x.p+'</div></div>';}).join('');
+      var opts=GROUPS.map(function(g){return '<option'+(g===pickTeam?' selected':'')+'>'+g+'</option>';}).join('');
+      var presets=[['1','個人題答對'],['3','團體題最佳組'],['2','團體題第二'],['1','團體題第三'],['5','實作發表第一'],['3','實作發表第二'],['1','實作發表第三'],['-1','扣分']];
+      var quick=presets.map(function(p,i){return '<button type="button" data-q="'+i+'" data-p="'+p[0]+'" data-r="'+esc(p[1])+'"'+(i===pickIdx?' class="on"':'')+'>'+(p[0]>0?'＋':'－')+Math.abs(p[0])+'　'+esc(p[1])+'</button>';}).join('');
+      var log=scores.filter(inC).length?scores.filter(inC).map(function(r){return '<div class="logi"><span class="p'+(+r.points<0?' neg':'')+'">'+(+r.points>0?'+':'')+r.points+'</span><b>'+esc(r.team)+'</b><span class="rs">'+esc(r.reason||'')+'</span><span class="dt">'+fmt(r.created_at)+'</span><button class="x" data-del="'+r.id+'">撤銷</button></div>';}).join(''):'<p style="color:var(--mute)">還沒有加減分紀錄。</p>';
+      host.innerHTML='<div class="panel"><h2>🏆 各組即時分數<a href="board.html'+(cohort?'?c='+encodeURIComponent(cohort):'')+'" target="_blank" rel="noopener">📺 開投影計分板</a></h2>'+lead+'</div>'
+        +'<div class="panel"><h2>⚡ 加減分</h2><p style="color:var(--mute);font-size:.84rem;margin:0 0 9px">每交一件（決策卡、團體題、補充）自動 ＋1。這裡處理簡報的三種加分：個人題 ＋1、團體題 ＋3／＋2／＋1、實作發表 ＋5／＋3／＋1。</p>'
+        +'<div class="quick" id="quick">'+quick+'</div>'
+        +'<div class="ctl"><select class="s" id="scTeam">'+opts+'</select><input class="s rz" id="scReason" value="'+esc(pickReason)+'" placeholder="理由"><button class="qbtn" id="scAdd">送出 '+(pickPts>0?'＋':'－')+Math.abs(pickPts)+'</button></div></div>'
+        +'<div class="panel"><h2>🧾 加減分紀錄（可撤銷）</h2><div class="log">'+log+'</div></div>';
+    }
+    else if(view==='poll'){
+      var ls=studs.filter(inC);
+      chips.innerHTML='<span class="chip">報到人數 <b>'+ls.length+'</b></span><span class="chip">更新 '+now+'</span>';
+      host.innerHTML=Object.keys(POLLS).map(function(k){
+        var P=POLLS[k],cnt={},n=0;
+        ls.forEach(function(r){var v=(r.quiz||{})[k];if(v){n++;cnt[v]=(cnt[v]||0)+1;}});
+        var byG=GROUPS.map(function(g){
+          var c={};ls.forEach(function(r){if((r.code||'').split('｜')[0]!==g)return;var v=(r.quiz||{})[k];if(v)c[v]=(c[v]||0)+1;});
+          var tot=P.o.reduce(function(a,o){return a+(c[o[0]]||0);},0);
+          if(!tot)return '';
+          var right=P.ans?(c[P.ans]||0):0;
+          return '<span class="tag">'+g+'：'+(P.ans?('答對 '+right+' / '+tot):tot+' 人')+'</span>';
+        }).join('');
+        return '<div class="panel"><p class="pq">'+esc(P.q)+'　<span style="color:var(--mute);font-weight:700">（'+n+' 人作答'+(P.ans?'，正解 '+P.ans:'')+'）</span></p>'
+          +P.o.map(function(o){
+            var c=cnt[o[0]]||0,pct=n?Math.round(c/n*100):0,isAns=P.ans===o[0];
+            return '<div class="pbar"><span class="l'+(isAns?' ans':'')+'">'+o[0]+'</span><div class="t"><i style="width:'+pct+'%"></i><span>'+esc(o[1])+(isAns?' ✅':'')+'</span></div><span class="v">'+c+' 人 · '+pct+'%</span></div>';
+          }).join('')+(byG?'<div style="margin-top:8px">'+byG+'</div>':'')+'</div>';
+      }).join('');
+    }
+    else if(view==='vote'){
+      var vt=voteTally(), arr2=GROUPS.map(function(g){return {g:g,v:vt.t[g]||0};}).sort(function(a,b){return b.v-a.v||(a.g<b.g?-1:1);});
+      var medal2=['🥇','🥈','🥉'];
+      chips.innerHTML='<span class="chip">已投票 <b>'+vt.n+'</b> 人</span><span class="chip">更新 '+now+'</span>';
+      host.innerHTML='<div class="panel"><h2>🗳️ 哪一組「選得最準」</h2>'
+        +arr2.map(function(x,i){return '<div class="lrow'+(i===0&&x.v>0?' t1':'')+'"><div class="rk">'+(i<3&&x.v>0?medal2[i]:(i+1))+'</div><div class="tm">'+esc(x.g)+'<span class="c">'+(vt.n?Math.round(x.v/vt.n*100):0)+'%</span></div><div class="pt">'+x.v+' 票</div></div>';}).join('')
+        +(vt.n?'':'<p style="color:var(--mute)">還沒有人投票。學員在「🎁 帶走」分頁投。</p>')+'</div>'
+        +'<div class="panel"><h2>誰投了誰</h2><div style="overflow:auto;max-height:50vh"><table class="st"><tr><th>組別</th><th>名字</th><th>投給</th></tr>'
+        +studs.filter(inC).filter(function(r){return (r.quiz||{}).vote;}).map(function(r){
+          var p=(r.code||'').split('｜');
+          return '<tr><td><b>'+esc(p[0]||'')+'</b></td><td>'+esc(r.name||'')+'</td><td><span class="tag">'+esc(r.quiz.vote)+'</span></td></tr>';
+        }).join('')+'</table></div></div>';
+    }
+    else if(view==='misc'){
+      var list=fSubs().filter(function(r){return r.task!=='card';});
+      chips.innerHTML='<span class="chip">其他交件 <b>'+list.length+'</b></span><span class="chip">圖片 <b>'+list.filter(function(r){return r.kind==='image';}).length+'</b></span><span class="chip">更新 '+now+'</span>';
+      if(!list.length){host.innerHTML='<div class="empty">還沒有團體題答案或補充上傳。</div>';return;}
+      host.innerHTML='<div class="panel">'+list.slice().reverse().map(function(r){
+        var body=r.kind==='image'?'<img src="'+esc(r.image_url)+'" data-full="'+esc(r.image_url)+'" alt="上傳" loading="lazy">':'<div class="txt">'+esc(r.content||'')+'</div>';
+        return '<div class="sub"><div><span class="tag">'+(r.task==='team'?'團體題':'補充')+'</span><br><b>'+esc(r.team||'')+'</b><br><span style="font-size:.76rem;color:var(--mute)">'+esc(r.submitter||'')+'<br>'+fmt(r.created_at)+'</span></div><div style="flex:1">'+body+'</div></div>';
+      }).join('')+'</div>';
+    }
+    else{
+      var st=fStuds().map(function(r){return {r:r,g:(r.code||'').split('｜')[0],n:(r.code||'').split('｜')[1]||r.name};})
+        .sort(function(a,b){return (a.g<b.g?-1:a.g>b.g?1:0)||(a.n<b.n?-1:1);});
+      chips.innerHTML='<span class="chip">報到人數 <b>'+st.length+'</b></span><span class="chip">有填店名 <b>'+st.filter(function(x){return (x.r.quiz||{}).shop;}).length+'</b></span><span class="chip">更新 '+now+'</span>';
+      if(!st.length){host.innerHTML='<div class="empty">這個梯次還沒有人報到。</div>';return;}
+      host.innerHTML='<div style="overflow:auto;max-height:76vh;border:1px solid var(--line);border-radius:14px"><table class="st"><tr><th>組別</th><th>名字</th><th>店名</th><th>角色</th><th>答對</th><th>標籤</th><th>情境</th><th>投票</th><th>更新</th></tr>'
+        +st.map(function(x){
+          var r=x.r,qz=r.quiz||{};
+          var keys=Object.keys(POLLS).filter(function(k){return POLLS[k].ans;});
+          var right=keys.filter(function(k){return qz[k]===POLLS[k].ans;}).length;
+          return '<tr><td><b>'+esc(x.g)+'</b></td><td><b>'+esc(x.n)+'</b></td><td>'+esc(qz.shop||'')+'</td><td>'+esc(qz.role||'')+'</td>'
+            +'<td>'+right+' / '+keys.length+'</td><td>'+((qz.tags||[]).length)+' 個</td><td>'+esc(qz.sce||'')+'</td><td>'+esc(qz.vote||'')+'</td>'
+            +'<td style="color:var(--mute);font-size:.76rem">'+fmt(r.updated_at)+'</td></tr>';
+        }).join('')+'</table></div>';
+    }
+  }
+  function csv(){
+    var lines=[];
+    if(view==='card'){
+      lines.push(['梯次','組別','情境','店名','填卡人','版次','生意目標','第一群','第二群','第三群','排除','訊息重點','CTA','KPI','發送人數','成本','標籤','時間'].join(','));
+      var by=cardsByTeam();
+      Object.keys(by).forEach(function(t){by[t].forEach(function(c,i){
+        lines.push([cohort,t,'"'+(c.sceName||'')+'"','"'+(c.shop||'')+'"','"'+(c.by||'')+'"',i+1]
+          .concat(DCF.map(function(f){return '"'+String(c[f[0]]||'').replace(/"/g,'""')+'"';}))
+          .concat([c.reach||0,c.cost||0,'"'+((c.tags||[]).join('、'))+'"',fmt(c._at)]).join(','));
+      });});
+    } else if(view==='score'){
+      lines.push(['名次','組別','交件數','講師加分','總分'].join(','));
+      totals().forEach(function(x,i){lines.push([i+1,x.g,x.u,x.b,x.p].join(','));});
+    } else if(view==='poll'){
+      lines.push(['題目','選項','人數','是否正解'].join(','));
+      var ls=studs.filter(inC);
+      Object.keys(POLLS).forEach(function(k){var P=POLLS[k];P.o.forEach(function(o){
+        lines.push(['"'+P.q+'"','"'+o[0]+' '+o[1]+'"',ls.filter(function(r){return (r.quiz||{})[k]===o[0];}).length,P.ans===o[0]?'正解':''].join(','));});});
+    } else if(view==='vote'){
+      var vt=voteTally();
+      lines.push(['組別','票數'].join(','));
+      GROUPS.forEach(function(g){lines.push([g,vt.t[g]||0].join(','));});
+    } else if(view==='misc'){
+      lines.push(['梯次','組別','類型','提交人','內容','圖片','時間'].join(','));
+      fSubs().filter(function(r){return r.task!=='card';}).forEach(function(r){
+        lines.push([r.cohort,r.team,r.task,'"'+(r.submitter||'')+'"','"'+String(r.content||'').replace(/"/g,'""')+'"',r.image_url||'',fmt(r.created_at)].join(','));});
+    } else {
+      lines.push(['梯次','組別','名字','店名','角色','答對題數','標籤','情境','投票','更新'].join(','));
+      fStuds().forEach(function(r){
+        var p=(r.code||'').split('｜'),qz=r.quiz||{};
+        var keys=Object.keys(POLLS).filter(function(k){return POLLS[k].ans;});
+        var right=keys.filter(function(k){return qz[k]===POLLS[k].ans;}).length;
+        lines.push([r.cohort,p[0]||'','"'+(p[1]||r.name||'')+'"','"'+(qz.shop||'')+'"','"'+(qz.role||'')+'"',right,'"'+((qz.tags||[]).join('、'))+'"',qz.sce||'',qz.vote||'',fmt(r.updated_at)].join(','));
+      });
+    }
+    var blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='餐飲發訊決策_'+view+'_'+(cohort||'全部')+'.csv';a.click();
+  }
+  async function addScore(o){try{var r=await fetch(SUPA+'/rest/v1/lw_workshop_scores',{method:'POST',headers:Object.assign(H(),{'Content-Type':'application/json',Prefer:'return=minimal'}),body:JSON.stringify(o)});return r.ok;}catch(e){return false;}}
+  async function delScore(id){try{var r=await fetch(SUPA+'/rest/v1/lw_workshop_scores?id=eq.'+id,{method:'DELETE',headers:H()});return r.ok;}catch(e){return false;}}
+  document.getElementById('view').addEventListener('click',function(e){var b=e.target.closest('[data-v]');if(!b)return;view=b.getAttribute('data-v');this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});render();});
+  document.getElementById('cohortSel').addEventListener('change',function(){cohort=this.value;document.getElementById('boardLink').href='board.html'+(cohort?'?c='+encodeURIComponent(cohort):'');render();});
+  document.getElementById('q').addEventListener('input',render);
+  document.getElementById('reload').addEventListener('click',function(){load(true);});
+  document.getElementById('csv').addEventListener('click',csv);
+  document.getElementById('host').addEventListener('click',async function(e){
+    var im=e.target.closest('img[data-full]');
+    if(im){document.getElementById('lbimg').src=im.getAttribute('data-full');document.getElementById('lb').classList.add('show');return;}
+    var cp=e.target.closest('[data-copy]');
+    if(cp){var t=decodeURIComponent(cp.getAttribute('data-copy'));if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){cp.textContent='✓ 已複製';setTimeout(function(){cp.textContent='📋 複製';},1500);});return;}
+    var qb=e.target.closest('[data-q]');
+    if(qb){pickPts=+qb.getAttribute('data-p');pickReason=qb.getAttribute('data-r');pickIdx=+qb.getAttribute('data-q');
+      document.getElementById('quick').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===qb);});
+      document.getElementById('scReason').value=pickReason;
+      document.getElementById('scAdd').textContent='送出 '+(pickPts>0?'＋':'－')+Math.abs(pickPts);return;}
+    if(e.target.id==='scAdd'){
+      if(!cohort){alert('請先在右上角選梯次再給分');return;}
+      var team=document.getElementById('scTeam').value;
+      var reason=(document.getElementById('scReason').value||'').trim();
+      e.target.disabled=true;
+      await addScore({course:COURSE,cohort:cohort,team:team,points:pickPts,reason:reason,category:'manual'});
+      await load(true);return;
+    }
+    var d=e.target.closest('[data-del]');
+    if(d){ if(!confirm('撤銷這筆加減分？'))return; await delScore(d.getAttribute('data-del')); await load(true); }
+  });
+  document.getElementById('host').addEventListener('change',function(e){if(e.target.id==='scTeam')pickTeam=e.target.value;});
+  document.getElementById('host').addEventListener('input',function(e){if(e.target.id==='scReason')pickReason=e.target.value;});
+  document.getElementById('lb').addEventListener('click',function(){this.classList.remove('show');});
+  load(true);
+  setInterval(function(){ if(!document.activeElement||['INPUT','SELECT','TEXTAREA'].indexOf(document.activeElement.tagName)<0) load(); },12000);
+</script>
+</body>
+</html>

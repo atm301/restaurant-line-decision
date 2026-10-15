@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>投影｜餐飲精準發訊決策</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%BA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--grn:#06c755;--mint:#8ef0bd;--deep:#07241f;--line:rgba(255,255,255,.14);--mute:#8fc4b4;}
+  body{font-family:'Noto Sans TC',system-ui,sans-serif;background:radial-gradient(circle at 20% 0%,#0d4a3c,#07241f 70%);color:#fff;min-height:100vh;overflow-x:hidden;}
+  .bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(7,36,31,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .bar h1{font-size:1rem;font-weight:900;color:var(--mint);}
+  .bar .mode{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;}
+  .bar button,.bar a{border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:5px 13px;font-weight:800;font-size:.8rem;font-family:inherit;cursor:pointer;text-decoration:none;}
+  .bar button.on{background:var(--grn);border-color:var(--grn);}
+  .wrap{padding:62px 26px 26px;max-width:1500px;margin:0 auto;}
+  .hint{color:var(--mute);font-size:.82rem;text-align:center;margin-top:16px;}
+  /* 計分榜 */
+  .lead{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:10px;}
+  .g{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+  .g.top{background:linear-gradient(140deg,rgba(142,240,189,.22),rgba(6,199,85,.12));border-color:var(--mint);}
+  .g .nm{font-size:1.5rem;font-weight:900;}
+  .g .pt{font-size:3.6rem;font-weight:900;line-height:1;color:var(--mint);margin:6px 0;}
+  .g .sm{font-size:.86rem;color:var(--mute);}
+  .g .vt{margin-top:10px;font-size:.9rem;}
+  .g .vbar{height:9px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:5px;}
+  .g .vbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--grn));transition:width .6s;}
+  .g .chk{position:absolute;top:14px;right:16px;font-size:1.5rem;}
+  .g.flash{animation:fl 1.2s ease;}
+  @keyframes fl{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 5px rgba(142,240,189,.55)}}
+  .sum{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:18px 0 6px;}
+  .sum div{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:16px;padding:12px 22px;text-align:center;}
+  .sum b{display:block;font-size:2rem;font-weight:900;color:var(--mint);line-height:1.2;}
+  .sum span{font-size:.82rem;color:var(--mute);}
+  /* 決策卡 demo */
+  .demo{animation:in .4s ease;}
+  @keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .dhd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+  .dhd .grp{font-size:2.6rem;font-weight:900;color:var(--mint);line-height:1;}
+  .dhd .sce{background:var(--grn);border-radius:999px;padding:5px 16px;font-size:1rem;font-weight:900;}
+  .dhd .shop{font-size:1.1rem;color:var(--mute);}
+  .dhd .tm{margin-left:auto;font-size:.82rem;color:var(--mute);}
+  .dgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));}
+  .f{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+  .f.wide{grid-column:1 / -1;}
+  .f .k{font-size:.84rem;font-weight:900;color:var(--mint);margin-bottom:4px;letter-spacing:.04em;}
+  .f .v{font-size:1.18rem;line-height:1.6;white-space:pre-wrap;font-weight:700;}
+  .f .v.empty{color:#4d7a6c;font-weight:400;}
+  .f.ex{border-color:rgba(255,140,120,.4);background:rgba(255,120,100,.1);} .f.ex .k{color:#ffb3a3;}
+  .dft{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:16px;padding:14px 18px;}
+  .dft .big{font-size:1.9rem;font-weight:900;color:var(--mint);line-height:1;}
+  .dft .lb{font-size:.78rem;color:var(--mute);}
+  .dft .over{color:#ff9d8a;}
+  .dft .tags{flex-basis:100%;}
+  .dft .tag{display:inline-block;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.84rem;margin:4px 5px 0 0;}
+  .nav{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+  .nav button{border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:8px 18px;font-weight:800;font-family:inherit;cursor:pointer;font-size:.9rem;}
+  .nav button.on{background:var(--grn);border-color:var(--grn);}
+  .nav button:disabled{opacity:.35;cursor:not-allowed;}
+  .empty{text-align:center;padding:70px 20px;color:var(--mute);font-size:1.1rem;}
+  @media (max-width:700px){.wrap{padding:60px 14px 20px;}.dhd .grp{font-size:1.9rem;}.f .v{font-size:1.02rem;}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>📺 餐飲精準發訊決策</h1>
+  <div class="mode">
+    <button id="mScore" class="on" type="button">🏆 計分榜</button>
+    <button id="mDemo" type="button">📝 決策卡輪播</button>
+    <button id="mAuto" type="button">▶ 自動播放</button>
+    <button id="mFull" type="button">⛶ 全螢幕</button>
+  </div>
+</div>
+<div class="wrap" id="host"><div class="empty">載入中…</div></div>
+<script>
+  var SUPA='https://dpglkagtzdwiovzbtase.supabase.co',KEY='sb_publishable_Tuj9p4DXvO-jEqVcBnumTg_TqZ1NnRu';
+  function H(){return {apikey:KEY,Authorization:'Bearer '+KEY};}
+  var COURSE='restaurant-line-decision';
+  var GROUPS=['第1組','第2組','第3組','第4組','第5組','第6組'];
+  var DCF=[['goal','① 生意目標',1],['g1','② 第一群',0],['g2','③ 第二群',0],['g3','④ 第三群',0],['ex','⑤ 排除名單',1],['msg','⑥ 訊息重點',0],['cta','⑦ CTA',0],['kpi','⑧ 保守目標與 KPI',1]];
+  var P=new URLSearchParams(location.search);
+  var COHORT=(P.get('c')||'').trim();
+  var mode=P.get('demo')?'demo':'score', demoIdx=0, auto=false, autoT=null;
+  var subs=[],studs=[],scores=[],prev={},first=true;
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+  function n0(n){return Math.round(+n||0).toLocaleString('en-US');}
+  function fmt(s){try{return new Date(s).toLocaleString('zh-TW',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+  function todayStr(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  if(!COHORT)COHORT=todayStr();
+  async function jget(p){try{var r=await fetch(SUPA+'/rest/v1/'+p,{headers:H()});var j=await r.json();return Array.isArray(j)?j:[];}catch(e){return [];}}
+  function cards(){
+    var by={};
+    subs.filter(function(r){return r.task==='card';}).forEach(function(r){
+      var c=null; try{c=JSON.parse(r.content);}catch(e){}
+      if(!c||!c._card)return; c._at=r.created_at; c._team=r.team; by[r.team]=c;
+    });
+    return by;
+  }
+  function totals(){
+    var up={},bo={},vt={},vn=0;
+    subs.forEach(function(x){up[x.team]=(up[x.team]||0)+1;});
+    scores.forEach(function(x){bo[x.team]=(bo[x.team]||0)+(+x.points||0);});
+    studs.forEach(function(r){var v=(r.quiz||{}).vote;if(v){vt[v]=(vt[v]||0)+1;vn++;}});
+    return {arr:GROUPS.map(function(g){return {g:g,u:up[g]||0,b:bo[g]||0,p:(up[g]||0)+(bo[g]||0),v:vt[g]||0};}),vn:vn};
+  }
+  function renderScore(){
+    var t=totals(), by=cards(), max=Math.max.apply(null,t.arr.map(function(a){return a.p;}));
+    var people=studs.length, done=Object.keys(by).length;
+    document.getElementById('host').innerHTML=
+      '<div class="sum"><div><b>'+people+'</b><span>報到人數</span></div><div><b>'+done+' / '+GROUPS.length+'</b><span>已交決策卡</span></div><div><b>'+t.vn+'</b><span>已投票</span></div></div>'
+      +'<div class="lead">'+t.arr.map(function(a){
+        var pct=t.vn?Math.round(a.v/t.vn*100):0;
+        var fl=(prev[a.g]!==undefined&&a.p>prev[a.g])?' flash':'';
+        prev[a.g]=a.p;
+        return '<div class="g'+(max>0&&a.p===max?' top':'')+fl+'">'
+          +(by[a.g]?'<div class="chk">✅</div>':'')
+          +'<div class="nm">'+(max>0&&a.p===max?'🏆 ':'')+esc(a.g)+'</div>'
+          +'<div class="pt">'+a.p+'</div>'
+          +'<div class="sm">交件 '+a.u+(a.b?' · 講師加分 '+(a.b>0?'+':'')+a.b:'')+'</div>'
+          +'<div class="vt">🗳️ '+a.v+' 票 <span class="sm">('+pct+'%)</span><div class="vbar"><i style="width:'+pct+'%"></i></div></div>'
+          +'</div>';
+      }).join('')+'</div>'
+      +'<p class="hint">鍵盤：← → 切換組別　1 到 6 直接跳　D 切決策卡　S 回計分榜　F 全螢幕</p>';
+  }
+  function renderDemo(){
+    var by=cards(), list=GROUPS.filter(function(g){return by[g];});
+    if(!list.length){
+      document.getElementById('host').innerHTML='<div class="empty">還沒有任何一組送出決策卡。<br><span style="font-size:.9rem">學員在課程網站「📝 決策卡」分頁填好按「送出決策卡」就會出現在這裡。</span></div>';
+      return;
+    }
+    if(demoIdx>=list.length)demoIdx=0; if(demoIdx<0)demoIdx=list.length-1;
+    var g=list[demoIdx], c=by[g];
+    var over=c.limit&&c.reach>c.limit;
+    document.getElementById('host').innerHTML='<div class="demo">'
+      +'<div class="dhd"><span class="grp">'+esc(g)+'</span><span class="sce">'+esc(c.sceName||'未選情境')+'</span>'
+      +(c.shop?'<span class="shop">'+esc(c.shop)+'</span>':'')+'<span class="tm">'+fmt(c._at)+'　'+(demoIdx+1)+' / '+list.length+'</span></div>'
+      +'<div class="dgrid">'+DCF.map(function(f){
+        var v=(c[f[0]]||'').toString().trim();
+        return '<div class="f'+(f[2]?' wide':'')+(f[0]==='ex'?' ex':'')+'"><div class="k">'+f[1]+'</div><div class="v'+(v?'':' empty')+'">'+esc(v||'（沒有填）')+'</div></div>';
+      }).join('')+'</div>'
+      +'<div class="dft"><div><div class="big">'+n0(c.reach)+'</div><div class="lb">發送人數</div></div>'
+      +'<div><div class="big">'+n0(c.cost)+' 元</div><div class="lb">訊息成本（0.2 元／則）</div></div>'
+      +(c.limit?'<div><div class="big'+(over?' over':'')+'">'+n0(c.limit)+'</div><div class="lb">'+(over?'⚠️ 超出 '+n0(c.reach-c.limit)+' 人':'預算上限　✅ 在預算內')+'</div></div>':'')
+      +(c.tags&&c.tags.length?'<div class="tags">'+c.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('')+'</div>':'')
+      +'</div>'
+      +'<div class="nav">'+list.map(function(x,i){return '<button data-go="'+i+'"'+(i===demoIdx?' class="on"':'')+'>'+esc(x)+'</button>';}).join('')
+      +'<button data-step="-1">← 上一組</button><button data-step="1">下一組 →</button></div>'
+      +'<p class="hint">鍵盤：← → 切換　1 到 6 直接跳　S 回計分榜　A 自動播放　F 全螢幕</p></div>';
+  }
+  function render(){ if(mode==='demo')renderDemo(); else renderScore();
+    document.getElementById('mScore').classList.toggle('on',mode==='score');
+    document.getElementById('mDemo').classList.toggle('on',mode==='demo');
+    document.getElementById('mAuto').classList.toggle('on',auto);
+  }
+  async function load(){
+    var c='course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT);
+    var r=await Promise.all([
+      jget('lw_workshop_submissions?'+c+'&select=team,task,content,created_at&order=created_at.asc'),
+      jget('lw_line_students?'+c+'&select=code,quiz'),
+      jget('lw_workshop_scores?'+c+'&select=team,points')
+    ]);
+    subs=r[0];studs=r[1];scores=r[2];
+    if(first){ var d=P.get('demo'); if(d){ var by=cards(), list=GROUPS.filter(function(g){return by[g];}); var i=list.indexOf(d); if(i>=0)demoIdx=i; } first=false; }
+    render();
+  }
+  document.getElementById('mScore').addEventListener('click',function(){mode='score';render();});
+  document.getElementById('mDemo').addEventListener('click',function(){mode='demo';render();});
+  document.getElementById('mAuto').addEventListener('click',function(){
+    auto=!auto; clearInterval(autoT);
+    if(auto){ mode='demo'; autoT=setInterval(function(){demoIdx++;render();},9000); }
+    render();
+  });
+  document.getElementById('mFull').addEventListener('click',function(){
+    if(document.fullscreenElement)document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){});
+  });
+  document.getElementById('host').addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){demoIdx=+g.getAttribute('data-go');render();return;}
+    var s=e.target.closest('[data-step]'); if(s){demoIdx+=+s.getAttribute('data-step');render();return;}
+  });
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowRight'){mode='demo';demoIdx++;render();}
+    else if(k==='ArrowLeft'){mode='demo';demoIdx--;render();}
+    else if(k==='s'||k==='S'){mode='score';render();}
+    else if(k==='d'||k==='D'){mode='demo';render();}
+    else if(k==='a'||k==='A'){document.getElementById('mAuto').click();}
+    else if(k==='f'||k==='F'){document.getElementById('mFull').click();}
+    else if(/^[1-6]$/.test(k)){
+      var by=cards(), list=GROUPS.filter(function(g){return by[g];});
+      var i=list.indexOf('第'+k+'組'); if(i>=0){mode='demo';demoIdx=i;render();}
+    }
+  });
+  load(); setInterval(load,6000);
+</script>
+</body>
+</html>
