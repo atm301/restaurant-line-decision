@@ -174,6 +174,10 @@
   .cmp .side.b1 h5{color:#ffd9a8;} .cmp .side.b2 h5{color:#8ef0bd;}
   .cmp .r{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.14);}
   .cmp .r b{color:#fff;}
+  .clubban{display:block;border-radius:16px;overflow:hidden;border:2px solid var(--grn);box-shadow:var(--shadow);margin:14px 0;text-decoration:none;background:#fff;}
+  .clubban img{width:100%;height:auto;display:block;}
+  .clubban .cta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--grn);color:#fff;font-weight:900;text-align:center;padding:12px;font-size:1rem;}
+  .clubban:active{transform:translateY(1px);}
   .chips{display:flex;gap:7px;flex-wrap:wrap;}
   .chip{border:1px solid var(--line);background:var(--sunken);border-radius:999px;padding:6px 13px;font-size:.84rem;font-weight:800;font-family:inherit;cursor:pointer;color:var(--mute);}
   .chip.on{background:var(--grn);border-color:var(--grn);color:#fff;}
@@ -390,6 +394,7 @@
       </tbody>
     </table></div>
     <div class="callout warn"><b>今天不是價格說明會。</b>方案調整只是提醒我們：每一次按下「傳送」，都是一次行銷投資。要問的不是「發不發」，而是<b>「發給誰才值得」</b>。<br><span class="muted-note">對客人也一樣：不必強調「變貴了」，而是說明方案與功能一起調整，重點放在每一則訊息帶回多少生意。最新功能與訊息費折抵方案，由 LINE 產業經理在前一段說明。</span></div>
+    <a class="clubban" href="https://liff.line.me/2006594688-UAvhebiz/campaign/494?utm_source=affliate&amp;utm_medium=atm301" target="_blank" rel="noopener" data-club="1"><picture><source srcset="line-club.webp" type="image/webp"><img src="line-club.jpg" alt="LINE 商家俱樂部 會員限定 餐飲產業經營者小聚：官方帳號發訊折抵，也記得到商家俱樂部領取" width="1200" height="670" loading="lazy"></picture><span class="cta">🎁 官方帳號發訊折抵，到商家俱樂部領取 →</span></a>
 
     <h2 class="h3">以前的發訊思維 vs 今天要建立的新思維</h2>
     <div class="tw"><table>
@@ -1071,6 +1076,7 @@
   ];
   var E='https://ecom.atmarketing.tw/';
   var TOOLS=[
+    {n:'LINE 商家俱樂部（發訊折抵）',s:1,d:'餐飲產業經營者小聚會員限定。官方帳號的發訊折抵記得到商家俱樂部領取，等於把今天算的訊息費再省一筆。',u:'https://liff.line.me/2006594688-UAvhebiz/campaign/494?utm_source=affliate&utm_medium=atm301'},
     {n:'RFM 會員分群',s:1,d:'上傳訂單或會員資料，自動分 7 群。這一檔要發給哪幾群，看這個就知道。',u:E+'rfm'},
     {n:'LINE OA 推播成本 × ROI 試算',s:1,d:'2026 最新計價，輕中高用量都能算，推播前先知道這一則划不划算。',u:E+'line-cost'},
     {n:'四類客人分眾推播產生器',s:1,d:'同一檔活動，新客／熟客／沉睡／VIP 一鍵生四版對得到人的推播。',u:E+'restaurant-segment-broadcast'},
