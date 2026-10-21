@@ -10,7 +10,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="圭話行銷 ATMarketing">
 <meta property="og:title" content="這次到底該發給誰？餐飲業的精準發訊決策">
-<meta property="og:description" content="發得更準，而不是單純發得更少。六大情境 × 四組實作，帶走一張發訊決策卡。">
+<meta property="og:description" content="發得更準，而不是單純發得更少。六大情境 × 六組實作，帶走一張發訊決策卡。">
 <meta property="og:url" content="https://atm301.github.io/restaurant-line-decision/">
 <meta property="og:image" content="https://atm301.github.io/restaurant-line-decision/og.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -312,7 +312,7 @@
         <tr><td><b>看成效</b></td><td>回推人數與 ROI 試算</td><td>目標回推發送人數，全發與精準發哪個比較賺</td></tr>
         <tr><td><b>真實案例</b></td><td>五家店，五種分眾邏輯</td><td>紅豆餅、牛肉麵、洪師傅、珍寶海鮮、漲價與折扣</td></tr>
         <tr><td><b>AI 幫手</b></td><td>決策卡、試算、備貨</td><td>用 AI 把決策卡從 30 分鐘縮成 5 分鐘</td></tr>
-        <tr><td><b>分組實作</b></td><td>四組 × 四情境</td><td>選出三群人與標籤，完成決策卡並上台發表</td></tr>
+        <tr><td><b>分組實作</b></td><td>六組 × 六情境</td><td>選出三群人與標籤，完成決策卡並上台發表</td></tr>
       </tbody>
     </table></div>
     <div class="tip"><div class="ic">🐢</div><div class="t"><b>小提示</b>每一段都有 1 到 2 題互動，舉手就有分。這個網站會幫你記分，也會記下你們組的決策卡。</div></div>
@@ -913,7 +913,7 @@
   <div id="chkHost"></div>
 
   <h3 class="h3">🗳️ 全場投票：哪一組「選得最準」？<span class="pill-live">不能投自己</span></h3>
-  <div class="callout" id="voteNote">四組發表完再投。點一組送出，想改再點一次。</div>
+  <div class="callout" id="voteNote">六組發表完再投。點一組送出，想改再點一次。</div>
   <div class="votegrid" id="voteGrid"></div>
   <div class="hero-btns" style="justify-content:flex-start;margin-top:12px">
     <button class="btn btn-primary" id="voteSave" type="button">🗳️ 送出我這一票</button>
@@ -1049,8 +1049,8 @@
     B:{n:'B 離峰／淡季',shop:'單店火鍋「鍋語」· 台中西屯 · 客單 520 元',budget:'好友 12,000 人，只能發 3,000 人',goal:'平日 14:00 至 17:00 來客只有尖峰的兩成，想用下午茶鍋套餐把離峰坐到五成',tip:'離峰看的是「那個時段有空、又住得近」的人，時段標籤比消費金額重要',send:3000},
     C:{n:'C 漲價與折扣',shop:'連鎖燒肉「炭吉」· 北中 5 家店 · 客單 1,100 元',budget:'好友 50,000 人，兩檔加總只能發 12,000 人',goal:'12 月起菜單調漲約 8%，同時 11 月有週年慶，要讓熟客不流失又不想全面打折',tip:'漲價告知和折扣是兩件事，收到的人不一樣，先分清楚再分配人數',send:12000},
     D:{n:'D 沉睡喚回',shop:'早午餐「晨光食堂」· 台中 4 家店 · 客單 380 元',budget:'好友 45,000 人（18,000 人超過 90 天沒來），只能發 6,000 人',goal:'平均消費週期 30 天，想把超過 3 倍週期沒回來的客人找回來一部分',tip:'沉睡要分層，剛沉睡的給理由、深度沉睡的給誘因，幾乎流失的這次先不發',send:6000},
-    E:{n:'E 新店開幕（備用）',shop:'晨光食堂第 5 家店 · 台中七期 · 客單 380 元',budget:'全品牌好友 45,000 人（多數在台北與新竹），開幕前後只能發 10,000 人',goal:'新店首月要累積 1,500 組來客，並把新店附近的客人加成好友',tip:'先用地區與加入管道篩出台中好友，新店 QR 自動貼標，把新好友留在新店名單',send:10000},
-    F:{n:'F 旺季（備用）',shop:'連鎖鍋物「暖鍋研究所」· 北中 6 家店 · 客單 680 元',budget:'好友 60,000 人，只能發 15,000 人',goal:'11 月到 1 月是旺季，週末尖峰一位難求，但平日仍有空位，想把營收再往上拉一成',tip:'旺季要先鎖提前訂位的高頻客，再把一部分人流導到平日，不要用折扣換客人',send:15000}
+    E:{n:'E 新店開幕',shop:'晨光食堂第 5 家店 · 台中七期 · 客單 380 元',budget:'全品牌好友 45,000 人（多數在台北與新竹），開幕前後只能發 10,000 人',goal:'新店首月要累積 1,500 組來客，並把新店附近的客人加成好友',tip:'先用地區與加入管道篩出台中好友，新店 QR 自動貼標，把新好友留在新店名單',send:10000},
+    F:{n:'F 旺季',shop:'連鎖鍋物「暖鍋研究所」· 北中 6 家店 · 客單 680 元',budget:'好友 60,000 人，只能發 15,000 人',goal:'11 月到 1 月是旺季，週末尖峰一位難求，但平日仍有空位，想把營收再往上拉一成',tip:'旺季要先鎖提前訂位的高頻客，再把一部分人流導到平日，不要用折扣換客人',send:15000}
   };
   var DCF=[['goal','生意目標'],['g1','第一群'],['g2','第二群'],['g3','第三群'],['ex','排除名單'],['msg','訊息重點'],['cta','CTA'],['kpi','保守目標與 KPI']];
   var CHK=[
